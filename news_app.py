@@ -90,10 +90,11 @@ REGIONS = {
         ],
     },
     "🇹🇼 Taiwan": {
-        "id": "taiwan",
-        "feeds": [
-            {"url": "https://www.taiwannews.com.tw/rss", "source": "Taiwan News", "country": "Taiwan", "color": "#4caf50"},
-            {"url": "https://focustaiwan.tw/rss", "source": "Focus Taiwan", "country": "Taiwan", "color": "#8bc34a"},
+    "id": "taiwan",
+    "feeds": [
+        {"url": "https://www.taipeitimes.com/xml/index.rss", "source": "Taipei Times", "country": "Taiwan", "color": "#4caf50"},
+        {"url": "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6311", "source": "CNA World", "country": "Taiwan", "color": "#8bc34a"},
+        {"url": "https://feeds.feedburner.com/TheNewsLens", "source": "The News Lens", "country": "Taiwan", "color": "#26a69a"},
         ],
     },
     "🇺🇸 United States": {
