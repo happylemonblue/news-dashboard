@@ -695,8 +695,37 @@ with st.sidebar:
 
     elapsed = time.time() - st.session_state.last_fetch_time
     remaining = max(0, CACHE_TTL_SECONDS - elapsed)
-    mins, secs = divmod(int(remaining), 60)
-    st.markdown(f"⏱️ **Next refresh in:** `{mins:02d}:{secs:02d}`")
+
+    st.markdown(f"""
+    <div style="margin-bottom:4px;">
+        ⏱️ <strong>Next refresh in:</strong>
+        <code id="countdown" style="font-size:1rem;">{int(remaining)}</code>
+    </div>
+    <script>
+        (function() {{
+            var seconds = {int(remaining)};
+            var el = document.getElementById('countdown');
+            if (!el) return;
+            function tick() {{
+                if (seconds <= 0) {{
+                    el.textContent = "Refreshing...";
+                    // Force Streamlit rerun by clicking the refresh button
+                    var buttons = parent.document.querySelectorAll('button');
+                    buttons.forEach(function(btn) {{
+                        if (btn.innerText.includes('Refresh')) btn.click();
+                    }});
+                    return;
+                }}
+                var m = Math.floor(seconds / 60);
+                var s = seconds % 60;
+                el.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                seconds--;
+                setTimeout(tick, 1000);
+            }}
+            tick();
+        }})();
+    </script>
+    """, unsafe_allow_html=True)
     st.caption("Auto-refreshes every 60 minutes")
 
     st.divider()
