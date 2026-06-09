@@ -691,43 +691,46 @@ with st.sidebar:
     st.divider()
 
     # ── Date & Timer ──
-    st.markdown(f"**📅 Today:** {datetime.now().strftime('%A, %B %d, %Y')}")
+    #st.markdown(f"**📅 Today:** {datetime.now().strftime('%A, %B %d, %Y')}")
+
+    #elapsed = time.time() - st.session_state.last_fetch_time
+    #remaining = max(0, CACHE_TTL_SECONDS - elapsed)
+
+    import streamlit.components.v1 as components
 
     elapsed = time.time() - st.session_state.last_fetch_time
-    remaining = max(0, CACHE_TTL_SECONDS - elapsed)
+    remaining = max(0, int(CACHE_TTL_SECONDS - elapsed))
 
-    st.markdown(f"""
-    <div style="margin-bottom:4px;">
+    components.html(f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                color: {'#e0e6ed' if st.session_state.dark_mode else '#1a202c'};
+                font-size: 0.95rem;">
         ⏱️ <strong>Next refresh in:</strong>
-        <code id="countdown" style="font-size:1rem;">{int(remaining)}</code>
+        <code id="cd" style="
+            font-size: 1.05rem;
+            background: {'#1a2a3a' if st.session_state.dark_mode else '#edf2f7'};
+            padding: 2px 8px;
+            border-radius: 4px;
+        ">--:--</code>
     </div>
     <script>
-        (function() {{
-            var seconds = {int(remaining)};
-            var el = document.getElementById('countdown');
-            if (!el) return;
-            function tick() {{
-                if (seconds <= 0) {{
-                    el.textContent = "Refreshing...";
-                    // Force Streamlit rerun by clicking the refresh button
-                    var buttons = parent.document.querySelectorAll('button');
-                    buttons.forEach(function(btn) {{
-                        if (btn.innerText.includes('Refresh')) btn.click();
-                    }});
-                    return;
-                }}
-                var m = Math.floor(seconds / 60);
-                var s = seconds % 60;
-                el.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-                seconds--;
-                setTimeout(tick, 1000);
+        var seconds = {remaining};
+        var el = document.getElementById('cd');
+        function tick() {{
+            if (seconds <= 0) {{
+                el.textContent = "00:00";
+                return;
             }}
-            tick();
-        }})();
+            var m = Math.floor(seconds / 60);
+            var s = seconds % 60;
+            el.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+            seconds--;
+            setTimeout(tick, 1000);
+        }}
+        tick();
     </script>
-    """, unsafe_allow_html=True)
+    """, height=36)
     st.caption("Auto-refreshes every 60 minutes")
-
     st.divider()
 
     # ── Headlines count slider ──
